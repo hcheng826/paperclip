@@ -29,4 +29,9 @@ fi
 # Always ensure volume mount is owned by the node user (volume mounts as root)
 chown node:node /paperclip
 
+# Remove stale Codex auth.json so OPENAI_API_KEY is used instead
+if [ -n "$OPENAI_API_KEY" ]; then
+    rm -f /paperclip/.codex/auth.json
+fi
+
 exec gosu node "$@"
