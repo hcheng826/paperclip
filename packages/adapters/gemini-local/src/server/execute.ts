@@ -337,7 +337,7 @@ export async function execute(ctx: AdapterExecutionContext): Promise<AdapterExec
     if (sandbox) {
       args.push("--sandbox");
     } else {
-      args.push("--sandbox=none");
+      args.push("--sandbox=false");
     }
     if (extraArgs.length > 0) args.push(...extraArgs);
     args.push("--prompt", prompt);
