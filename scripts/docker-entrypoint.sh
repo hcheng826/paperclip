@@ -26,4 +26,7 @@ if [ "$changed" = "1" ]; then
     chown -R node:node /paperclip
 fi
 
+# Always ensure volume mount is owned by the node user (volume mounts as root)
+chown node:node /paperclip
+
 exec gosu node "$@"
