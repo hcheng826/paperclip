@@ -28,6 +28,23 @@ fi
 
 # Always ensure volume mount is owned by the node user (volume mounts as root)
 chown node:node /paperclip
+# Ensure AI tool home dirs are writable (created as root on first run)
+mkdir -p /paperclip/.gemini/tmp
+
+# Pre-configure Gemini CLI so it skips the interactive first-run setup wizard.
+# Without settings.json it always prompts even when GEMINI_API_KEY is present.
+if [ -n "$GEMINI_API_KEY" ] || [ -n "$GOOGLE_API_KEY" ]; then
+    if [ ! -f /paperclip/.gemini/settings.json ]; then
+        printf '{"selectedAuthType":"gemini-api-key","theme":"Default"}\n' \
+            > /paperclip/.gemini/settings.json
+    fi
+fi
+# Trust /app so the CLI doesn't prompt "do you trust this folder?"
+if [ ! -f /paperclip/.gemini/trustedFolders.json ]; then
+    printf '["/app"]\n' > /paperclip/.gemini/trustedFolders.json
+fi
+
+chown -R node:node /paperclip/.gemini
 
 # Write Codex auth.json from env so the API key is always current
 if [ -n "$OPENAI_API_KEY" ]; then
